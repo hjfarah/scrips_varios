@@ -1,38 +1,50 @@
 #!/bin/bash
 
-
 echo -e "ingrese nombre del proyecto:"
+read nameProy
 
-read var
-npx create-react-app $var
+echo -e "proyecto con amplify (y/n):"
+read amplify
+
+yarn create react-app $nameProy
+
+if [ -d "./${nameProy}" ]; then
+    cd $nameProy
+    yarn add mobx mobx-react
+    yarn add antd react-app-rewired customize-cra babel-plugin-import
+    yarn add tachyons
+
+    echo "const { override, fixBabelImports } = require('customize-cra');
+    module.exports = override(
+      fixBabelImports('import', {
+        libraryName: 'antd',
+        libraryDirectory: 'es',
+        style: 'css',
+      }),
+    );" > config-overrides.js
+
+    sed -i 's/react-scripts start/react-app-rewired start/g' package.json
+    sed -i 's/react-scripts build/react-app-rewired build/g' package.json
+    sed -i 's/react-scripts test/react-app-rewired test/g' package.json
 
 
-cd $var
-yarn add mobx mobx-react
-yarn add antd react-app-rewired customize-cra babel-plugin-import
-yarn add tachyons
-
-echo "const { override, fixBabelImports } = require('customize-cra');
-module.exports = override(
-  fixBabelImports('import', {
-    libraryName: 'antd',
-    libraryDirectory: 'es',
-    style: 'css',
-  }),
-);" > config-overrides.js
+    if [ $amplify == "y" ] || [ $amplify == "y" ]; then
+      yarn add aws-amplify
+      yarn add aws-amplify-react
+    else
+      echo sin amplify
+    fi
 
 
-sed -i 's/react-scripts start/react-app-rewired start/g' package.json
-sed -i 's/react-scripts build/react-app-rewired build/g' package.json
-sed -i 's/react-scripts test/react-app-rewired test/g' package.json
+else
+        echo error en create-react-app
+fi
+
+
+
+
+
+
 
 
 #yarn start
-
-
-
-
-
-
-
- 
